@@ -22,12 +22,14 @@ class SplashBase(ShowBase):
         ShowBase.__init__(self) 
         self.accept('escape', sys.exit)
         base.win.set_clear_color((0,0,0,1))
-        base.cam.set_pos(0, -2, 0)
+        cam_dist = 2
+        base.cam.set_pos(0, -2.2 * cam_dist, 0)
+        base.cam.node().get_lens().set_fov(45/cam_dist)
 
         # Load and prepare content
         self.logo_animation = Actor("panda3d_logo.bam")  # Centered around 0, 6.3, 0
         self.logo_animation.reparent_to(render)
-        self.logo_animation.set_pos(0, -3.15, -0.1)
+        self.logo_animation.set_pos(0, -3.15, -0.08)
         shader = Shader.load(
             Shader.SL_GLSL,
             vertex="panda3d_logo.vert",
@@ -45,6 +47,7 @@ class SplashBase(ShowBase):
             print(".")
         def fade_background_to_white(t):
             base.win.set_clear_color((t,t,t,1))
+            self.logo_animation.set_shader_input("time", t/3.878)
             self.logo_animation.set_shader_input("fade", t)
         self.effects = Sequence(
             LerpFunc(

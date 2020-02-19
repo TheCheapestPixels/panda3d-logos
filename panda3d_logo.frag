@@ -9,7 +9,8 @@ uniform float time;
 void main () {
   // float v = pow(v_texcoord.x - 0.5, 2.0) + pow(v_texcoord.y - 0.5, 2.0);
   // v = mod(v * 10.0, 1.0);
-  float v = mod(v_texcoord.x + time * 20.0, 1.0);
+  float v = mod(min(abs(v_texcoord.x - 0.5), abs(v_texcoord.y - 0.5)) * 2.0 - time * 10.0, 1.0);
+  // float v = mod(time * 20.0, 1.0);
 
   float r = 0.0;
   float g = 0.0;
@@ -31,5 +32,14 @@ void main () {
     r = i;
   }
 
-  gl_FragColor = vec4(r* (1.0 - fade), g * (1.0 - fade), b * (1.0 - fade), 0);
+  r = sqrt(r);
+  g = sqrt(g);
+  b = sqrt(b);
+
+  gl_FragColor = vec4(
+    r * (1.0 - fade),
+    g * (1.0 - fade),
+    b * (1.0 - fade),
+    0
+  );
 }
