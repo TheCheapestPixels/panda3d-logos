@@ -25,7 +25,7 @@ setup(
     install_requires=['panda3d'],
     entry_points={
         'console_scripts': [
-            'panda3dsplash=panda3dsplash:main',
+            'panda3dsplash=panda3d_logos.panda3dsplash:main',
         ],
     },
 )
