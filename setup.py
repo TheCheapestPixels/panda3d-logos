@@ -12,16 +12,15 @@ with open("README.md", "r") as fh:
 
 setup(
     name='panda3d-logos',
-    version='0.1',
-    description='Logos for Panda3D',
+    version='0.11',
+    description='The Panda3D logo in various formats, a 3d animated splash screen and code to show it off.',
     long_description=long_description,
     long_description_content_type="text/markdown",
     url='https://github.com/janEntikan/panda3d-logos',
     author='janEntikan',
     keywords='panda3d',
-    packages=find_packages(exclude=['examples']),
+    packages=find_packages(),
     include_package_data=True,
-    python_requires='>=3.4, <4',
     install_requires=['panda3d'],
     entry_points={
         'console_scripts': [

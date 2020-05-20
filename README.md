@@ -1,7 +1,7 @@
 panda3d-logos
 =============
 
-Media, and code to show it off, for Panda3D branding.
+The Panda3D logo in various formats, a 3d animated splash screen and code to show it off.
 
 
 Wait, code?

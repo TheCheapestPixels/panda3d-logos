@@ -1,3 +1,6 @@
 __pycache__/
+*.egg-info/
+build/
+dist/
 *.blend1*
 *.pyc
