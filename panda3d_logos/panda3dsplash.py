@@ -24,6 +24,11 @@ class SplashBase(ShowBase):
             sys.exit()
         return task.cont
 
-    
-app = SplashBase()
-app.run()
+
+def main():
+    app = SplashBase()
+    app.run()
+
+
+if __name__ == '__main__':
+    main()
