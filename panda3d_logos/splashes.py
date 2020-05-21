@@ -1,4 +1,5 @@
 import sys
+from enum import Enum
 
 from direct.showbase.ShowBase import ShowBase
 from direct.actor.Actor import Actor
@@ -18,9 +19,27 @@ from pathlib import Path
 asset_path = Path(__file__).parents[1] / 'assets' 
 
 
+class Pattern(Enum):
+    CONCENTRIC_CIRCLES = 0
+    FLICKERING = 1
+    SQUARESTAR = 2
+    NOISE = 3
+    DOUBLE_WHEEL = 4
+    WHEEL = 5
+
+
+class Colors(Enum):
+    DIRECT = 0  # Black to white, non-wrapping
+    RAINBOW = 1  # Red, yellow, green, cyan, blue, purple, red
+    RGB_BANDS = 2 # Red, green, blue
+
+
 class RainbowSplash:
-    def __init__(self):
-        pass
+    def __init__(self, pattern=Pattern.SQUARESTAR, colors=Colors.RGB_BANDS, pattern_freq=2, cycle_freq=10):
+        self.pattern = pattern
+        self.colors = colors
+        self.pattern_freq = pattern_freq
+        self.cycle_freq = cycle_freq
 
     def setup(self):
         base.win.set_clear_color((0,0,0,1))
@@ -39,6 +58,10 @@ class RainbowSplash:
         )
         self.logo_animation.set_shader(shader)
         self.logo_animation.set_shader_input("fade", 0.0)
+        self.logo_animation.set_shader_input("pattern", self.pattern.value)
+        self.logo_animation.set_shader_input("colors", self.colors.value)
+        self.logo_animation.set_shader_input("pattern_freq", self.pattern_freq)
+        self.logo_animation.set_shader_input("cycle_freq", self.cycle_freq)
         self.logo_sound = base.loader.loadSfx(asset_path / "panda3d_logo.wav")
 
         # Build interval
