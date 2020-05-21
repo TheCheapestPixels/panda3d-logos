@@ -25,6 +25,8 @@ class Pattern(Enum):
     SQUARESTAR = 2
     NOISE = 3
     DOUBLE_WHEEL = 4
+    WHEEL = 5
+
 
 class Colors(Enum):
     DIRECT = 0  # Black to white, non-wrapping

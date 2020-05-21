@@ -16,11 +16,41 @@ float pi = 3.14159265358;
 // Basic patterns
 // Turn the texture coordinates into a greyscale pattern
 
-float concentric_circles() {return pow(v_texcoord.x - 0.5, 2.0) + pow(v_texcoord.y - 0.5, 2.0);}
-float flickering        () {return mod(0.0, 1.0);}
-float squarestar        () {return min(abs(v_texcoord.x - 0.5), abs(v_texcoord.y - 0.5));}
-float noise             () {return sin(mod(v_texcoord.x * 100000.0 + v_texcoord.y * 100000.0 + time * 100000.0, 1.0)) / 2.0 + 0.5;}
-float double_wheel      () {return acos(dot(normalize(v_texcoord - vec2(0.5, 0.5)), vec2(0, 1))) / pi;}
+float concentric_circles() {
+  return pow(v_texcoord.x - 0.5, 2.0) + pow(v_texcoord.y - 0.5, 2.0);
+}
+
+
+float flickering () {
+  return mod(0.0, 1.0);
+}
+
+
+float squarestar () {
+  return min(abs(v_texcoord.x - 0.5), abs(v_texcoord.y - 0.5));
+}
+
+
+float noise () {
+  return sin(mod(v_texcoord.x * 100000.0 + v_texcoord.y * 100000.0 + time * 100000.0, 1.0)) / 2.0 + 0.5;
+}
+
+
+float double_wheel () {
+  return acos(dot(normalize(v_texcoord - vec2(0.5, 0.5)), vec2(0, 1))) / pi;
+}
+
+
+float wheel () {
+  float angle = acos(
+    dot(normalize(v_texcoord - vec2(0.5, 0.5)), vec2(0, 1))
+  ) / pi;
+  if (v_texcoord.x <= 0.5) {
+    return angle / 2.0;
+  } else {
+    return 1.0 - angle / 2.0;
+  }
+}
 
 
 // Colorization
@@ -46,6 +76,9 @@ vec4 rainbow(float v) {
   if (section == 3) {rgb = vec4(0.0,      phases.y, 1.0,      0.0);}
   if (section == 4) {rgb = vec4(phases.x, 0.0,      1.0,      0.0);}
   if (section == 5) {rgb = vec4(1.0,      0.0,      phases.y, 0.0);}
+
+  // Sinate colors
+  rgb = cos(rgb * pi / 2.0);
 
   return rgb;
 }
@@ -78,6 +111,7 @@ void main () {
   if (pattern == 2) {v = squarestar        ();}
   if (pattern == 3) {v = noise             ();}
   if (pattern == 4) {v = double_wheel      ();}
+  if (pattern == 5) {v = wheel             ();}
 
   // Scaling and movement
   v = mod(v * pattern_freq - time * cycle_freq, 1.0);
