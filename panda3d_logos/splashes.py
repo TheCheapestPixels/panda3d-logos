@@ -12,10 +12,15 @@ from direct.interval.IntervalGlobal import SoundInterval
 from panda3d.core import AntialiasAttrib
 from panda3d.core import Shader
 from panda3d.core import Vec3
+from panda3d.core import VBase2
+from panda3d.core import VBase4
+from panda3d.core import NodePath
+from panda3d.core import loadPrcFileData
 
 from pathlib import Path
 
 
+loadPrcFileData('', 'textures-power-2 none')
 asset_path = Path(__file__).parents[1] / 'assets' 
 
 
@@ -67,8 +72,6 @@ class RainbowSplash:
         # Build interval
         def shader_time(t):
             self.logo_animation.set_shader_input("time", t)
-        def add_antialiasing(t):
-            render.set_antialias(AntialiasAttrib.MMultisample)
         def fade_background_to_white(t):
             base.win.set_clear_color((t,t,t,1))
             self.logo_animation.set_shader_input("time", t/3.878)
@@ -90,10 +93,92 @@ class RainbowSplash:
                     duration=3.878,
                 ),
                 LerpFunc(
-                    add_antialiasing,
+                    fade_background_to_white,
                     fromData=0,
                     toData=1,
-                    duration=0,
+                    duration=1.0,
+                ),
+            ),
+        )
+        return effects
+
+    def teardown(self):
+        self.logo_animation.cleanup()
+        # FIXME: Destroy self.logo_sound
+
+
+
+class WindowSplash:
+    def setup(self):
+        x_size, y_size = base.win.get_x_size(), base.win.get_y_size()
+        bg_buffer = base.win.makeTextureBuffer(
+            "Background Scene",
+            x_size,
+            y_size,
+        )
+        bg_buffer.set_clear_color_active(True)
+        bg_buffer.set_clear_color(VBase4(0, 1, 0, 1))
+        bg_buffer.set_sort(-100)  # render buffer before main scene.
+
+        bg_texture = bg_buffer.get_texture()
+        self.bg_texture = bg_texture
+        bg_camera = base.make_camera(bg_buffer)
+
+        # The scene to be rendered to texture
+        bg_scene = NodePath("My Scene")
+        bg_camera.reparent_to(bg_scene)
+        bg_camera.set_pos(0, -100, 50)
+        bg_camera.look_at(0, 0, 0)
+
+        model = base.loader.loadModel('models/environment')
+        model.reparent_to(bg_scene)
+        model.set_scale(0.25)
+
+        # Foreground Scene
+        base.win.set_clear_color((0, 0, 0, 1))
+        cam_dist = 2
+        base.cam.set_pos(0, -2.2 * cam_dist, 0)
+        base.cam.node().get_lens().set_fov(45/cam_dist)
+
+        self.logo_animation = Actor(asset_path / "panda3d_logo.bam")
+        self.logo_animation.reparent_to(render)
+        self.logo_animation.set_two_sided(True)
+
+        shader = Shader.load(
+            Shader.SL_GLSL,
+            vertex=asset_path / "splash_window.vert",
+            fragment=asset_path / "splash_window.frag",
+        )
+        self.logo_animation.set_shader(shader)
+        self.logo_animation.set_shader_input("background", bg_texture)
+        self.logo_animation.set_shader_input("fade", 0.0)
+        self.logo_sound = base.loader.loadSfx(asset_path / "panda3d_logo.wav")
+
+        # Build interval
+        def fade_background_to_white(t):
+            base.win.set_clear_color((t,t,t,1))
+            self.logo_animation.set_shader_input("fade", t)
+        def set_background_texture(t):
+            self.logo_animation.set_shader_input(
+                "background",
+                self.bg_texture,
+            )
+                    
+        effects = Parallel(
+            self.logo_animation.actorInterval(
+                "splash",
+                loop=False,
+            ),
+            SoundInterval(
+                self.logo_sound,
+                loop=False,
+            ),
+            Sequence(
+                LerpFunc(
+                    set_background_texture,
+                    fromData=0,
+                    toData=1,
+                    duration=3.878,
                 ),
                 LerpFunc(
                     fade_background_to_white,
