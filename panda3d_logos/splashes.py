@@ -124,15 +124,7 @@ class WindowSplash:
         self.bg_texture = bg_texture
         bg_camera = base.make_camera(bg_buffer)
 
-        # The scene to be rendered to texture
-        bg_scene = NodePath("My Scene")
-        bg_camera.reparent_to(bg_scene)
-        bg_camera.set_pos(0, -100, 50)
-        bg_camera.look_at(0, 0, 0)
-
-        model = base.loader.loadModel('models/environment')
-        model.reparent_to(bg_scene)
-        model.set_scale(0.25)
+        self.setup_background_scene(bg_camera)
 
         # Foreground Scene
         base.win.set_clear_color((0, 0, 0, 1))
@@ -191,5 +183,21 @@ class WindowSplash:
         return effects
 
     def teardown(self):
+        self.teardown_background_scene()
         self.logo_animation.cleanup()
         # FIXME: Destroy self.logo_sound
+        # FIXME: Destroy the extra buffer stuff
+
+    def setup_background_scene(self, bg_camera):
+        # The scene to be rendered to texture
+        bg_scene = NodePath("My Scene")
+        bg_camera.reparent_to(bg_scene)
+        bg_camera.set_pos(0, -100, 50)
+        bg_camera.look_at(0, 0, 0)
+
+        model = base.loader.loadModel('models/environment')
+        model.reparent_to(bg_scene)
+        model.set_scale(0.25)
+
+    def teardown_background_scene(self):
+        pass
