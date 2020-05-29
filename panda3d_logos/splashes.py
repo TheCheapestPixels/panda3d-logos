@@ -189,6 +189,13 @@ class WindowSplash:
         # FIXME: Destroy the extra buffer stuff
 
     def setup_background_scene(self, bg_camera):
+        """
+        Override this to set up the scene that will be seen through the
+        splash's shards.
+
+        bg_camera
+          The camera watching the background scene
+        """
         # The scene to be rendered to texture
         bg_scene = NodePath("My Scene")
         bg_camera.reparent_to(bg_scene)
@@ -200,4 +207,7 @@ class WindowSplash:
         model.set_scale(0.25)
 
     def teardown_background_scene(self):
+        """
+        Override this to tear down your scene again.
+        """
         pass
