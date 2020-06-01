@@ -28,8 +28,8 @@ class SplashBase(ShowBase):
 
 def main():
     from argparse import ArgumentParser
-    from splashes import Pattern
-    from splashes import Colors
+    from panda3d_logos.splashes import Pattern
+    from panda3d_logos.splashes import Colors
 
     parser = ArgumentParser(
         description="A splash screen for Panda3D."
