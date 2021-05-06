@@ -8,6 +8,7 @@ from direct.interval.IntervalGlobal import Parallel
 from direct.interval.IntervalGlobal import LerpPosHprInterval
 from direct.interval.IntervalGlobal import LerpFunc
 from direct.interval.IntervalGlobal import SoundInterval
+from direct.interval.IntervalGlobal import Wait
 
 from panda3d.core import AntialiasAttrib
 from panda3d.core import Shader
@@ -45,6 +46,7 @@ class RainbowSplash:
         self.colors = colors
         self.pattern_freq = pattern_freq
         self.cycle_freq = cycle_freq
+        self.fade_out = fade_out
 
     def setup(self):
         base.win.set_clear_color((0,0,0,1))
@@ -76,6 +78,10 @@ class RainbowSplash:
             base.win.set_clear_color((t,t,t,1))
             self.logo_animation.set_shader_input("time", t/3.878)
             self.logo_animation.set_shader_input("fade", t)
+        def fade_to_black(t):
+            base.win.set_clear_color((1-t,1-t,1-t,1))
+            #self.logo_animation.set_shader_input("time", t/3.878)
+            #self.logo_animation.set_shader_input("fade", t)
         effects = Parallel(
             self.logo_animation.actorInterval(
                 "splash",
@@ -97,6 +103,13 @@ class RainbowSplash:
                     fromData=0,
                     toData=1,
                     duration=1.0,
+                ),
+                Wait(1.5),
+                LerpFunc(
+                    fade_to_black,
+                    fromData=0,
+                    toData=1,
+                    duration=1.741,
                 ),
             ),
         )
