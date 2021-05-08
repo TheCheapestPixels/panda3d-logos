@@ -46,7 +46,6 @@ class RainbowSplash:
         self.colors = colors
         self.pattern_freq = pattern_freq
         self.cycle_freq = cycle_freq
-        self.fade_out = fade_out
 
     def setup(self):
         base.win.set_clear_color((0,0,0,1))
@@ -82,6 +81,14 @@ class RainbowSplash:
             base.win.set_clear_color((1-t,1-t,1-t,1))
             #self.logo_animation.set_shader_input("time", t/3.878)
             #self.logo_animation.set_shader_input("fade", t)
+
+        # Timing:
+        # 0.000     Start
+        # 3.878     Logo is assembled, fade to black-on-whitey
+        # 4.878     Black on white achieved
+        # <+1.500>  Begin fade to black
+        # <+1.741>  Black on black achieved
+        # 8.119 Sound ends
         effects = Parallel(
             self.logo_animation.actorInterval(
                 "splash",
