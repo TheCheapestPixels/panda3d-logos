@@ -22,7 +22,7 @@ from pathlib import Path
 
 
 loadPrcFileData('', 'textures-power-2 none')
-asset_path = Path(__file__).parents[1] / 'assets' 
+asset_path = Path(__file__).resolve().parent / 'assets' 
 
 
 class Pattern(Enum):
