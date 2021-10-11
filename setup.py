@@ -12,7 +12,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='panda3d-logos',
-    version='0.12',
+    version='0.13',
     description='The Panda3D logo in various formats, a 3d animated splash screen and code to show it off.',
     long_description=long_description,
     long_description_content_type="text/markdown",
