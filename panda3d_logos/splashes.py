@@ -14,6 +14,7 @@ from panda3d.core import AntialiasAttrib
 from panda3d.core import Shader
 from panda3d.core import Vec3
 from panda3d.core import VBase2
+from panda3d.core import VBase3
 from panda3d.core import VBase4
 from panda3d.core import NodePath
 from panda3d.core import loadPrcFileData
@@ -48,11 +49,22 @@ class RainbowSplash:
         self.cycle_freq = cycle_freq
 
     def setup(self):
+        # Store current values
+        self.entry_background_color = VBase4(base.win.get_clear_color())
+        self.entry_cam_pos = VBase3(base.cam.get_pos())
+        self.entry_cam_hpr = VBase3(base.cam.get_hpr())
+        self.entry_cam_scale = VBase3(base.cam.get_scale())
+        self.entry_cam_fov = VBase2(base.cam.node().get_lens().get_fov())
+
+        # Set values for splash
         base.win.set_clear_color((0,0,0,1))
         cam_dist = 2
         base.cam.set_pos(0, -2.2 * cam_dist, 0)
+        base.cam.set_hpr(0, 0, 0)
+        base.cam.set_scale(1)
         base.cam.node().get_lens().set_fov(45/cam_dist)
 
+        # Set up the splash itself
         self.logo_animation = Actor(asset_path / "panda3d_logo.bam")
         self.logo_animation.reparent_to(render)
         self.logo_animation.set_two_sided(True)
@@ -123,9 +135,15 @@ class RainbowSplash:
         return effects
 
     def teardown(self):
+        # Store current values
+        base.win.set_clear_color(self.entry_background_color)
+        base.cam.set_pos(self.entry_cam_pos)
+        base.cam.set_hpr(self.entry_cam_hpr)
+        base.cam.set_scale(self.entry_cam_scale)
+        base.cam.node().get_lens().set_fov(self.entry_cam_fov)
+
         self.logo_animation.cleanup()
         # FIXME: Destroy self.logo_sound
-
 
 
 class WindowSplash:
